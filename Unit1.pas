@@ -72,7 +72,7 @@ jValue: string;
 begin
 if (edt_AuthRequestToken.Text='') then
   begin
-  showmessage('pegar acesso google e colar em "edt_AuthRequestToken"');
+  showmessage('get google access and paste in "edt_AuthRequestToken"');
   GETCodautorizacaoClick(self);
   exit;
   end;
@@ -105,12 +105,12 @@ exit; }
 
 if edt_AuthRequestToken.Text='' then
   begin
-  showmessage('pegar acesso google e colar em "edt_AuthRequestToken"');
+  showmessage('get google access and paste in "edt_AuthRequestToken"');
   GETCodautorizacaoClick(self);
   exit;
   end;
 
-//lista conteúdo
+//list content
 
 RESTClient2.BaseURL:='https://www.googleapis.com/drive/v3/files';
 RESTRequest2.Params.AddItem('Authorization','Bearer '+edt_OAuth2AccessToken.Text,TRESTRequestParameterKind.pkHTTPHEADER, [poDoNotEncode]);
@@ -135,14 +135,14 @@ var
 begin
 if edt_AuthRequestToken.Text='' then
   begin
-  showmessage('pegar acesso google e colar em "edt_AuthRequestToken"');
+  showmessage('get google access and paste in "edt_AuthRequestToken"');
   GETCodautorizacaoClick(self);
   exit;
   end;
 
 
 
-//pega autorizacao token (edt_AuthRequestToken.text) e transforma em token de acesso
+//get authorization token (edt_AuthRequestToken.text) and turn it into an access token
 OAuth2Authenticator2.Scope:=edt_OAuth2Scope.Text;
 OAuth2Authenticator2.ClientID:=edt_OAuth2ClientID.Text;
 OAuth2Authenticator2.ClientSecret:=edt_AuthClientSecret.Text;
@@ -205,19 +205,19 @@ var
 LURL:string;
 begin
 // chama browser pega auth token
-//Detalhes da conta de serviço = ID exclusivo = xxxxxxx-xxxxxxx-xxxxxxx  https://console.cloud.google.com/  CRIAR CONTA DE SERVICO
+//Service Account Details = Unique ID = xxxxxxx-xxxxxxx-xxxxxxx https://console.cloud.google.com/ CREATE SERVICE ACCOUNT
   LURL := edt_OAuth2AuthEndpoint.Text;
   LURL := LURL + '?client_id=' + edt_OAuth2ClientID.Text;
   LURL := LURL + '&response_type=' + 'code';
   LURL := LURL + '&redirect_uri=' + URIEncode(edt_OAuth2RedirectEndpoint.Text);
   LURL := LURL + '&scope=' + URIEncode(edt_OAuth2Scope.text);
 
-//  LURL := LURL + '&login_hint=??????????@gmail.com';//OPÇÃO  e-mail
-//  LURL := LURL + '&nonce=xxxxxxx-xxxxxxx-xxxxxxx';//OPÇÃO conta de serviço = ID exclusivo NO FORMATO "xxxxxxx-xxxxxxx-xxxxxxx"
+//  LURL := LURL + '&login_hint=??????????@gmail.com';//OPTION email
+//  LURL := LURL + '&nonce=xxxxxxx-xxxxxxx-xxxxxxx';//Service Account OPTION = Unique ID IN "xxxxxxx-xxxxxxx-xxxxxxx" FORMAT
 
   ShellExecute(HInstance, 'open',pchar(LURL), nil, nil, SW_NORMAL);
 
-// chama browser pegar  auth token  e colar em  edt_AuthRequestToken.TEXT
+// calls browser get auth token and paste in edt_AuthRequestToken.TEXT
 
 end;
 
@@ -229,7 +229,7 @@ begin
 
 if edt_AuthRequestToken.Text='' then
   begin
-  showmessage('pegar acesso google e colar em "edt_AuthRequestToken"');
+  showmessage('get google access and paste in "edt_AuthRequestToken"');
   GETCodautorizacaoClick(self);
   exit;
   end;
@@ -237,17 +237,17 @@ if edt_AuthRequestToken.Text='' then
   if edt_OAuth2AccessToken.Text='' then
      refreshTokenClick(self);
 
-//limite de envio no google drive é de 5TG TERAbyte por arquivo !!!!!!
+//upload limit on google drive is 5TG TERAbyte per file!!!!!!
 if OpenDialog1.Execute then
   S:=OpenDialog1.FileName
 else
   begin
-  showmessage('Selecione arquivo para UPLOAD GOOGLE DRIVE');
+  showmessage('Select file to UPLOAD GOOGLE DRIVE');
   exit;
   end;
 
 
-//caso NÃO USE STREAM, SE NÃO DESABILITAR AS DUAS LINHAS abaixo, da ERRO na leitura  "restrequest2.AddFile"
+//in case you DO NOT USE STREAM, IF YOU DO NOT DISABLE THE TWO LINES below, the ERROR reading "restrequest2.AddFile"
 //upload_stream:= TFileStream.Create(s,fmOpenRead);
 //upload_stream.Position := 0;
 
@@ -268,9 +268,9 @@ RESTRequest2.Accept:= 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*
 RESTRequest2.Method := TRESTRequestMethod.rmPOST;
 RESTRequest2.Resource:='/upload/drive/v3/files';
 
-//restrequest2.AddBody(upload_stream,TRESTContentType.ctAPPLICATION_OCTET_STREAM); // FUNCIONA E NAO ADICIONA BOUNDARY AO CORPO
+//restrequest2.AddBody(upload_stream,TRESTContentType.ctAPPLICATION_OCTET_STREAM); // WORKS AND DOES NOT ADD BOUNDARY TO BODY
 {OU}
-restrequest2.AddFile('testeFile.txt',s,TRESTContentType.ctAPPLICATION_OCTET_STREAM); //FUNCIONA ADICIONA BOUNDARY AO CORPO
+restrequest2.AddFile('testeFile.txt',s,TRESTContentType.ctAPPLICATION_OCTET_STREAM); //WORKS ADD BOUNDARY TO BODY
 
 RESTRequest2.Params.AddItem('Content-Type', 'application/json; charset=UTF-8', TRESTRequestParameterKind.pkHTTPHEADER, [poDoNotEncode]);
 RESTRequest2.Params.AddItem('Accept', 'application/json', TRESTRequestParameterKind.pkHTTPHEADER, [poDoNotEncode]);
@@ -279,7 +279,7 @@ RESTRequest2.Execute;
 
 RESTRequest2.Response.GetSimpleValue('id', id);
 
-//renomear upload enviado acima
+//rename upload uploaded above
 RESTRequest2.Params.Clear;
 RESTClient2.BaseURL := 'https://www.googleapis.com/drive/v2/files/'+ id;
 RESTRequest2.Resource := '';
@@ -287,13 +287,13 @@ RESTRequest2.Method:=TRESTRequestMethod.rmPUT;
 RESTRequest2.AddBody('{"title": "'+ extractfilename(s) +'"}', TRESTContentType.ctAPPLICATION_JSON);
 RESTRequest2.Execute;
 
-memo1.Lines.Add('SUCESSO UPLOAD !') ;
-memo1.Lines.Add('id do arquivo google drive '+id) ;
+memo1.Lines.Add('UPLOAD SUCCESS !') ;
+memo1.Lines.Add('google drive file id '+id) ;
 memo1.Lines.Add(inttostr(RESTRequest2.Response.StatusCode)) ;
 memo1.Lines.Add(RESTRequest2.Response.StatusText) ;
 
 {
-//INFORMAÇÕES ADICIONAIS DA RESPOSTA CASO QUEIRA
+//ADDITIONAL ANSWER INFORMATION IF YOU WANT
 memo1.Lines.Add('RESP FullRequestURI>'+RESTResponse2.FullRequestURI);
 memo1.Lines.Add('RESP codigo>'+inttostr(RESTRequest2.Response.StatusCode));
 memo1.Lines.Add('RESP status text>'+RESTRequest2.Response.StatusText);
