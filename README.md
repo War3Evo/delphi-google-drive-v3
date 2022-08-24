@@ -1,2 +1,2 @@
 # delphi-google-drive-v3
-exemplo autorização, listar conteúdo, upload arquivo, renomear arquivo delphi Xe5... delphi 11
+example authorization, list content, upload file, rename file delphi Xe5... delphi 11
